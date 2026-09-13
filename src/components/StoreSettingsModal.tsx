@@ -12,6 +12,7 @@ interface StoreSettingsModalProps {
   onDeleteProduct: (productId: string) => void;
 }
 
+const COMMON_BANKS = ['농협', '국민', '신한', '우리', '하나', '카카오뱅크', '토스뱅크', '우체국', '기업', '새마을', '수협', '신협'];
 const COMMON_EMOJIS = ['🍊', '🍎', '🧃', '🌾', '📦', '🥔', '🥕', '🍇', '🍓', '🥬'];
 
 export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
@@ -233,32 +234,67 @@ export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
             </div>
 
             {/* Bank Info */}
-            <div className="pt-2 border-t border-stone-200">
-              <h4 className="text-xs font-bold text-stone-700 mb-2 flex items-center gap-1">
-                <CreditCard className="w-3.5 h-3.5 text-stone-500" />
+            <div className="pt-2 border-t border-stone-200 space-y-2">
+              <h4 className="text-xs font-bold text-stone-700 flex items-center gap-1">
+                <CreditCard className="w-3.5 h-3.5 text-orange-600" />
                 <span>무통장 입금 계좌</span>
               </h4>
-              <div className="grid grid-cols-3 gap-2">
+
+              {/* Row 1: Bank & Account Holder */}
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="block text-[11px] font-semibold text-stone-600 mb-1">은행명</label>
+                  <div className="flex gap-1">
+                    <select
+                      value={COMMON_BANKS.includes(bankName) ? bankName : '직접입력'}
+                      onChange={(e) => {
+                        if (e.target.value !== '직접입력') {
+                          setBankName(e.target.value);
+                        }
+                      }}
+                      className="w-full px-2.5 py-2 bg-white border border-stone-300 rounded-xl text-xs font-bold text-stone-800"
+                    >
+                      {COMMON_BANKS.map((b) => (
+                        <option key={b} value={b}>{b}</option>
+                      ))}
+                      <option value="직접입력">기타 (직접입력)</option>
+                    </select>
+                  </div>
+                  {!COMMON_BANKS.includes(bankName) && (
+                    <input
+                      type="text"
+                      value={bankName}
+                      onChange={(e) => setBankName(e.target.value)}
+                      placeholder="은행명 입력"
+                      className="mt-1 w-full px-3 py-1.5 bg-white border border-stone-300 rounded-xl text-xs font-bold"
+                    />
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-stone-600 mb-1">예금주</label>
+                  <input
+                    type="text"
+                    value={bankHolder}
+                    onChange={(e) => setBankHolder(e.target.value)}
+                    placeholder="예금주 성함"
+                    className="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs font-bold text-stone-900"
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Full-width Bank Account Number */}
+              <div>
+                <label className="block text-[11px] font-semibold text-stone-600 mb-1">
+                  계좌번호 <span className="text-stone-400 font-normal">(- 포함 또는 숫자만 길게 입력 가능)</span>
+                </label>
                 <input
                   type="text"
-                  value={bankName}
-                  onChange={(e) => setBankName(e.target.value)}
-                  placeholder="은행명"
-                  className="px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs"
-                />
-                <input
-                  type="text"
+                  inputMode="numeric"
                   value={bankAccount}
                   onChange={(e) => setBankAccount(e.target.value)}
-                  placeholder="계좌번호"
-                  className="px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs font-mono"
-                />
-                <input
-                  type="text"
-                  value={bankHolder}
-                  onChange={(e) => setBankHolder(e.target.value)}
-                  placeholder="예금주"
-                  className="px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs"
+                  placeholder="예: 302-1234-5678-91 (농협)"
+                  className="w-full px-3.5 py-2.5 bg-white border border-stone-300 rounded-xl text-sm font-mono font-bold text-stone-900 focus:ring-2 focus:ring-orange-500 tracking-wider"
                 />
               </div>
             </div>
