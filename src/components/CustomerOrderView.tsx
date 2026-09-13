@@ -352,9 +352,8 @@ export const CustomerOrderView: React.FC = () => {
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div>
-                        <h3 className="text-lg font-black text-stone-900 flex items-center gap-1.5">
-                          <span>{(product.emoji && product.emoji !== '🥕') ? product.emoji : '📦'}</span>
-                          <span>{product.name}</span>
+                        <h3 className="text-lg font-black text-stone-900">
+                          {product.name}
                         </h3>
                         {product.description && (
                           <p className="text-xs text-stone-500 mt-0.5 leading-snug">

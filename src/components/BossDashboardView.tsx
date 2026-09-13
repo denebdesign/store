@@ -117,13 +117,12 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
 
   // Breakdown by product name for current date scope
   const productBreakdown = useMemo(() => {
-    const counts: Record<string, { name: string; emoji: string; count: number; unit: string }> = {};
+    const counts: Record<string, { name: string; count: number; unit: string }> = {};
     activeOrders.forEach((ord) => {
       ord.items.forEach((it) => {
         if (!counts[it.productName]) {
           counts[it.productName] = {
             name: it.productName,
-            emoji: (it.emoji && it.emoji !== '🥕') ? it.emoji : '📦',
             count: 0,
             unit: it.unit,
           };
@@ -132,7 +131,7 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
       });
     });
     return Object.values(counts).sort((a, b) => b.count - a.count);
-  }, [activeOrders, currentStore.emoji]);
+  }, [activeOrders]);
 
   // Orders filtered by search & status inside dateScopedOrders
   const filteredOrders = useMemo(() => {
@@ -394,9 +393,8 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {productBreakdown.map((item, idx) => (
                   <div key={idx} className="bg-white p-3 rounded-xl border border-stone-200 shadow-2xs flex justify-between items-center">
-                    <span className="font-bold text-stone-800 text-sm flex items-center gap-1.5 truncate">
-                      <span>{item.emoji}</span>
-                      <span className="truncate">{item.name}</span>
+                    <span className="font-bold text-stone-800 text-sm truncate">
+                      {item.name}
                     </span>
                     <span className="text-lg font-black text-stone-900 shrink-0 ml-2">
                       {item.count}<span className="text-xs font-normal text-stone-500">{item.unit}</span>

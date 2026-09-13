@@ -13,7 +13,6 @@ interface StoreSettingsModalProps {
 }
 
 const COMMON_BANKS = ['농협', '국민', '신한', '우리', '하나', '카카오뱅크', '토스뱅크', '우체국', '기업', '새마을', '수협', '신협'];
-const COMMON_EMOJIS = ['🍊', '🍎', '🧃', '🌾', '📦', '🥔', '🥕', '🍇', '🍓', '🥬'];
 
 export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
   isOpen,
@@ -36,7 +35,6 @@ export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
   const [newProdName, setNewProdName] = useState('');
   const [newProdPriceStr, setNewProdPriceStr] = useState('');
   const [newProdUnit, setNewProdUnit] = useState('박스');
-  const [newProdEmoji, setNewProdEmoji] = useState(currentStore.emoji || '📦');
   const [newProdDesc, setNewProdDesc] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
@@ -46,7 +44,6 @@ export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
   const [editName, setEditName] = useState('');
   const [editPriceStr, setEditPriceStr] = useState('');
   const [editUnit, setEditUnit] = useState('박스');
-  const [editEmoji, setEditEmoji] = useState('📦');
   const [editDesc, setEditDesc] = useState('');
   const [editIsAvailable, setEditIsAvailable] = useState(true);
 
@@ -106,7 +103,7 @@ export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
       name: cleanName,
       price: numPrice,
       unit: newProdUnit.trim() || '박스',
-      emoji: newProdEmoji.trim() || currentStore.emoji || '📦',
+      emoji: '',
       description: newProdDesc.trim(),
       isAvailable: true,
     });
@@ -123,7 +120,6 @@ export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
     setEditName(prod.name);
     setEditPriceStr(prod.price.toLocaleString());
     setEditUnit(prod.unit || '박스');
-    setEditEmoji(prod.emoji || currentStore.emoji || '📦');
     setEditDesc(prod.description || '');
     setEditIsAvailable(prod.isAvailable !== false);
   };
@@ -145,7 +141,7 @@ export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
       name: cleanName,
       price: numPrice,
       unit: editUnit.trim() || '박스',
-      emoji: editEmoji.trim() || currentStore.emoji || '📦',
+      emoji: '',
       description: editDesc.trim(),
       isAvailable: editIsAvailable,
     });
@@ -316,12 +312,7 @@ export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
               </h3>
               <button
                 type="button"
-                onClick={() => {
-                  setShowAddForm(!showAddForm);
-                  if (!showAddForm) {
-                    setNewProdEmoji(currentStore.emoji || '📦');
-                  }
-                }}
+                onClick={() => setShowAddForm(!showAddForm)}
                 className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white text-xs font-bold rounded-xl transition flex items-center gap-1 shadow-xs"
                 id="toggle-add-product-form-btn"
               >
@@ -347,49 +338,19 @@ export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
                   </button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2">
-                  <div className="col-span-2">
-                    <label className="block text-[11px] font-bold text-stone-700 mb-1">
-                      상품명 <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={newProdName}
-                      onChange={(e) => setNewProdName(e.target.value)}
-                      placeholder="예) 감귤주스 2리터, 당도선별 사과 3kg"
-                      required
-                      autoFocus
-                      className="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-orange-500 outline-hidden"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-stone-700 mb-1">아이콘/이모지</label>
-                    <input
-                      type="text"
-                      value={newProdEmoji}
-                      onChange={(e) => setNewProdEmoji(e.target.value)}
-                      className="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-center text-base"
-                    />
-                  </div>
-                </div>
-
-                {/* Quick Emoji selection */}
-                <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                  <span className="text-[10px] text-stone-500 font-semibold">추천:</span>
-                  {COMMON_EMOJIS.map((emoji) => (
-                    <button
-                      key={emoji}
-                      type="button"
-                      onClick={() => setNewProdEmoji(emoji)}
-                      className={`w-7 h-7 rounded-lg border text-sm flex items-center justify-center transition active:scale-90 ${
-                        newProdEmoji === emoji
-                          ? 'bg-orange-200 border-orange-500 scale-105'
-                          : 'bg-white border-stone-200 hover:bg-stone-50'
-                      }`}
-                    >
-                      {emoji}
-                    </button>
-                  ))}
+                <div>
+                  <label className="block text-[11px] font-bold text-stone-700 mb-1">
+                    상품명 <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={newProdName}
+                    onChange={(e) => setNewProdName(e.target.value)}
+                    placeholder="예) 당근 2kg, 감귤주스 2리터, 사과 5kg"
+                    required
+                    autoFocus
+                    className="w-full px-3 py-2 bg-white border border-stone-300 rounded-xl text-xs font-medium focus:ring-2 focus:ring-orange-500 outline-hidden"
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
@@ -520,25 +481,14 @@ export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
                         </button>
                       </div>
 
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="col-span-2">
-                          <label className="block text-[10px] font-bold text-stone-600 mb-0.5">상품명</label>
-                          <input
-                            type="text"
-                            value={editName}
-                            onChange={(e) => setEditName(e.target.value)}
-                            className="w-full px-2.5 py-1.5 bg-white border border-stone-300 rounded-lg text-xs font-bold"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] font-bold text-stone-600 mb-0.5">이모지</label>
-                          <input
-                            type="text"
-                            value={editEmoji}
-                            onChange={(e) => setEditEmoji(e.target.value)}
-                            className="w-full px-2.5 py-1.5 bg-white border border-stone-300 rounded-lg text-center text-sm"
-                          />
-                        </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-stone-600 mb-0.5">상품명</label>
+                        <input
+                          type="text"
+                          value={editName}
+                          onChange={(e) => setEditName(e.target.value)}
+                          className="w-full px-2.5 py-1.5 bg-white border border-stone-300 rounded-lg text-xs font-bold"
+                        />
                       </div>
 
                       <div className="grid grid-cols-2 gap-2">
@@ -630,7 +580,6 @@ export const StoreSettingsModal: React.FC<StoreSettingsModalProps> = ({
                     }`}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className="text-2xl shrink-0">{prod.emoji || currentStore.emoji || '📦'}</span>
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <h4 className="text-sm font-bold text-stone-900 truncate">{prod.name}</h4>
