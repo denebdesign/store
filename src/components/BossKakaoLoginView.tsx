@@ -81,7 +81,7 @@ export const BossKakaoLoginView: React.FC<BossKakaoLoginViewProps> = ({
           </div>
 
           <h2 className="text-lg sm:text-2xl font-black tracking-tight text-white">
-            농산물 직거래 / 주문관리3
+            농산물 직거래 / 주문관리
           </h2>
           <p className="text-[11px] sm:text-xs text-stone-300 mt-0.5 font-medium">
             카톡 주문 접수 · 실시간 알림 · 송장 엑셀 원클릭
