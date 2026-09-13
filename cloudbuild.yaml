@@ -1,0 +1,48 @@
+steps:
+  # 0. Ensure Artifact Registry repository exists
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        gcloud artifacts repositories describe cloud-run-source-deploy --location=asia-south1 || \
+        gcloud artifacts repositories create cloud-run-source-deploy --repository-format=docker --location=asia-south1 --description="Cloud Run Docker repository"
+
+  # 1. Build image using Cloud Build & Docker
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/store:$COMMIT_SHA'
+      - '.'
+
+  # 2. Push image to Artifact Registry (asia-south1)
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'asia-south1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/store:$COMMIT_SHA'
+
+  # 3. Deploy cleanly to Cloud Run as service 'store'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'store'
+      - '--image=asia-south1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/store:$COMMIT_SHA'
+      - '--region=asia-south1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--port=3000'
+      - '--project=$PROJECT_ID'
+      - '--quiet'
+
+images:
+  - 'asia-south1-docker.pkg.dev/$PROJECT_ID/cloud-run-source-deploy/store:$COMMIT_SHA'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+
+
+

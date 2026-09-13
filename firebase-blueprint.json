@@ -1,0 +1,84 @@
+{
+  "entities": {
+    "Store": {
+      "title": "Store",
+      "description": "산지직송 농장 및 상점 정보와 판매 상품 목록",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "상점 고유 ID" },
+        "slug": { "type": "string", "description": "상점 고유 URL 슬러그" },
+        "name": { "type": "string", "description": "농장 / 상점 전체 명칭" },
+        "shortName": { "type": "string", "description": "표시용 짧은 상점명" },
+        "category": { "type": "string", "description": "카테고리 (농산물, 수산물 등)" },
+        "intro": { "type": "string", "description": "상점 한 줄 소개" },
+        "emoji": { "type": "string", "description": "상점 대표 이모지" },
+        "notice": { "type": "string", "description": "공지사항" },
+        "isOrderActive": { "type": "boolean", "description": "주문 접수 활성화 여부" },
+        "orderDeadline": { "type": "string", "description": "주문 마감 안내 문구" },
+        "bankName": { "type": "string", "description": "입금 은행명" },
+        "bankAccount": { "type": "string", "description": "입금 계좌번호" },
+        "bankHolder": { "type": "string", "description": "예금주명" },
+        "ownerPhone": { "type": "string", "description": "사장님 연락처" },
+        "ownerKakaoId": { "type": "string", "description": "사장님 카카오 계정 ID" },
+        "ownerKakaoNickname": { "type": "string", "description": "사장님 카카오 닉네임" },
+        "products": {
+          "type": "array",
+          "description": "판매 상품 목록"
+        },
+        "createdAt": { "type": "string", "description": "생성 일시" },
+        "updatedAt": { "type": "string", "description": "수정 일시" }
+      },
+      "required": ["id", "slug", "name", "shortName", "bankName", "bankAccount", "bankHolder", "products"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "고객이 접수한 주문서 정보",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "주문 고유 번호" },
+        "storeId": { "type": "string", "description": "주문 대상 상점 ID" },
+        "customerName": { "type": "string", "description": "주문자 성함" },
+        "phone": { "type": "string", "description": "주문자 전화번호" },
+        "address": { "type": "string", "description": "배송지 기본 주소" },
+        "detailAddress": { "type": "string", "description": "배송지 상세 주소" },
+        "deliveryRequest": { "type": "string", "description": "배송 요청사항" },
+        "items": { "type": "array", "description": "주문 상품 항목 및 수량" },
+        "totalAmount": { "type": "number", "description": "총 결제 금액" },
+        "status": { "type": "string", "enum": ["pending", "paid", "shipping", "delivered", "cancelled"], "description": "주문 상태" },
+        "depositConfirmed": { "type": "boolean", "description": "입금 확인 여부" },
+        "trackingNumber": { "type": "string", "description": "운송장 번호" },
+        "shippingCarrier": { "type": "string", "description": "택배사명" },
+        "createdAt": { "type": "string", "description": "주문 접수 일시" }
+      },
+      "required": ["id", "storeId", "customerName", "phone", "address", "items", "totalAmount", "status", "createdAt"]
+    },
+    "CustomerProfile": {
+      "title": "CustomerProfile",
+      "description": "전화번호 기반 이전 배송지 자동완성 프로필",
+      "type": "object",
+      "properties": {
+        "phone": { "type": "string", "description": "전화번호" },
+        "customerName": { "type": "string", "description": "최근 주문자 성함" },
+        "address": { "type": "string", "description": "최근 배송지 기본 주소" },
+        "detailAddress": { "type": "string", "description": "최근 배송지 상세 주소" },
+        "deliveryRequest": { "type": "string", "description": "최근 배송 요청사항" },
+        "lastOrderedAt": { "type": "string", "description": "최근 주문 일시" }
+      },
+      "required": ["phone", "customerName", "address"]
+    }
+  },
+  "firestore": {
+    "/stores/{storeId}": {
+      "schema": "Store",
+      "description": "농장/상점 정보 컬렉션 (고객 메뉴 조회 및 사장님 정보 관리)"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "전체 주문 컬렉션 (고객 주문 접수 및 사장님 실시간 주문 관리)"
+    },
+    "/customerProfiles/{phone}": {
+      "schema": "CustomerProfile",
+      "description": "전화번호 기반 배송지 자동완성 캐시"
+    }
+  }
+}

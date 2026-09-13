@@ -1,0 +1,30 @@
+@import "tailwindcss";
+ 
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box !important;
+  }
+  html, body {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    overflow-x: hidden !important;
+    overscroll-behavior-x: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative;
+    touch-action: pan-y;
+    -webkit-text-size-adjust: 100%;
+  }
+  #root {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    display: flex;
+    flex-direction: column;
+  }
+}
+

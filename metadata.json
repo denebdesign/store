@@ -1,0 +1,8 @@
+{
+  "name": "농부주문",
+  "description": "카톡 링크 하나로 주문하는 농장 직거래·오일장 주문 접수 및 사장님 주문관리 시스템",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

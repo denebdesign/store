@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Stores: Publicly viewable for customer orders; creatable and updatable by shop owners
+    match /stores/{storeId} {
+      allow read: if true;
+      allow create: if storeId != 'store-jeju-carrot' && request.resource.data.name is string;
+      allow update: if storeId != 'store-jeju-carrot' && request.resource.data.name is string;
+      allow delete: if true;
+    }
+
+    // Orders: Anyone can create an order; shop owners and customers can read orders
+    match /orders/{orderId} {
+      allow read: if true;
+      allow create: if request.resource.data.customerName is string &&
+                      request.resource.data.phone is string &&
+                      request.resource.data.totalAmount is number;
+      allow update: if request.resource.data.status is string;
+      allow delete: if true;
+    }
+
+    // Customer Profiles: Phone number lookup to auto-fill address for returning customers
+    match /customerProfiles/{phone} {
+      allow read: if true;
+      allow write: if request.resource.data.customerName is string && request.resource.data.address is string;
+    }
+    // Users: Save Kakao authenticated boss accounts
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+  }
+}
