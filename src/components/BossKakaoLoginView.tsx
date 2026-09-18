@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck, ArrowRight, Bell, FileSpreadsheet, 
-  Smartphone, Sparkles, Store, Copy, Check, AlertCircle, PlusCircle, ShoppingBag, ExternalLink
+  Smartphone, Sparkles, Store, Copy, Check, AlertCircle, PlusCircle, ShoppingBag, ExternalLink, Lock
 } from 'lucide-react';
 import { loginWithKakao, KakaoUser, initKakaoSDK } from '../services/kakaoService';
 import { TARGET_CUSTOM_DOMAIN, FIREBASE_HOSTING_DOMAIN } from '../utils/domain';
@@ -138,6 +138,12 @@ export const BossKakaoLoginView: React.FC<BossKakaoLoginViewProps> = ({
                 </>
               )}
             </button>
+
+            {/* Customer Protection Notice */}
+            <div className="flex items-center justify-center gap-1 text-[11px] text-stone-500 text-center py-0.5">
+              <Lock className="w-3 h-3 text-stone-400 shrink-0" />
+              <span>미인가 고객 접근 차단: 최초 로그인 시 보안코드 인증 필요</span>
+            </div>
 
             {/* Quick Demo Login Option */}
             <div>

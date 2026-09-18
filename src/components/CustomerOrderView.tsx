@@ -238,8 +238,8 @@ export const CustomerOrderView: React.FC = () => {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <div className="w-full max-w-md bg-white rounded-3xl p-8 shadow-xl text-center border border-stone-200" id="order-closed-view">
-          <div className="w-16 h-16 bg-stone-100 text-stone-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-            {currentStore.emoji}
+          <div className="w-16 h-16 bg-stone-100 text-stone-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Clock className="w-8 h-8" />
           </div>
           <h2 className="text-2xl font-black text-stone-900 mb-2">
             현재 주문을 받고 있지 않습니다.
@@ -250,8 +250,8 @@ export const CustomerOrderView: React.FC = () => {
           </p>
 
           <div className="bg-stone-50 rounded-2xl p-4 border border-stone-200 text-left text-sm space-y-2 mb-6">
-            <div className="font-bold text-stone-900 flex items-center gap-1.5">
-              <span>{currentStore.emoji}</span> {currentStore.name}
+            <div className="font-bold text-stone-900">
+              {currentStore.name}
             </div>
             <div className="text-stone-600 text-xs">
               다음 판매 일정 또는 주문 문의는 아래 연락처로 문의해 주시기 바랍니다.
@@ -280,8 +280,7 @@ export const CustomerOrderView: React.FC = () => {
         {/* Top Header Bar */}
         <header className="w-full px-4 py-3 border-b border-stone-100 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur-xs z-30 shadow-xs">
           <div className="flex items-center gap-2 min-w-0">
-            <span className="text-xl shrink-0">{currentStore.emoji}</span>
-            <span className="text-sm sm:text-base font-extrabold text-stone-900 tracking-tight truncate max-w-[200px]">{currentStore.shortName}</span>
+            <span className="text-sm sm:text-base font-extrabold text-stone-900 tracking-tight truncate max-w-[240px]">{currentStore.shortName}</span>
           </div>
           <span className="text-[11px] font-bold px-2.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full flex items-center gap-1.5 shrink-0">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -294,12 +293,11 @@ export const CustomerOrderView: React.FC = () => {
           <div className="flex-1 flex flex-col w-full animate-in fade-in duration-200" id="step-product-select">
             {/* Store Intro Banner */}
             <div className="w-full px-4 py-5 sm:p-6 text-center border-b border-stone-100 bg-gradient-to-b from-orange-50/40 to-transparent">
-              <div className="text-4xl mb-2">{currentStore.emoji}</div>
               <h1 className="text-xl sm:text-2xl font-black text-stone-900 mb-1">
                 {currentStore.shortName}
               </h1>
               <p className="text-sm sm:text-base font-bold text-orange-600 mb-2 break-keep">
-                {currentStore.intro.replace(/🥕/g, '').trim()}
+                {currentStore.intro.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]|[\u2600-\u27BF]/g, '').trim()}
               </p>
               {currentStore.notice && (
                 <p className="text-xs text-stone-500 max-w-xs mx-auto leading-relaxed break-keep">
@@ -501,11 +499,10 @@ export const CustomerOrderView: React.FC = () => {
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div>
                         <span className="text-xs font-black text-amber-900 flex items-center gap-1.5">
-                          <span>✨</span>
-                          <span>{matchedPreviousOrder.customerName} 고객님의 이전 배송지가 있습니다!</span>
+                          <span>{matchedPreviousOrder.customerName} 고객님의 이전 배송지가 있습니다</span>
                         </span>
                         <p className="text-xs text-stone-700 mt-1 font-medium">
-                          📍 {matchedPreviousOrder.address} {matchedPreviousOrder.detailAddress}
+                          {matchedPreviousOrder.address} {matchedPreviousOrder.detailAddress}
                         </p>
                       </div>
                       {isAutoFilled && (
@@ -535,7 +532,7 @@ export const CustomerOrderView: React.FC = () => {
                       </button>
                     ) : (
                       <p className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
-                        <span>✓</span>
+                        <Check className="w-3.5 h-3.5 inline shrink-0" />
                         <span>지난번 배송지가 자동으로 입력되었습니다. (필요 시 아래에서 수정 가능)</span>
                       </p>
                     )}
@@ -621,7 +618,7 @@ export const CustomerOrderView: React.FC = () => {
                 {selectedItems.map((item, idx) => (
                   <div key={idx} className="flex justify-between items-center text-sm">
                     <span className="font-semibold text-stone-800">
-                      {(item.emoji && item.emoji !== '🥕') ? item.emoji : '📦'} {item.productName}
+                      {item.productName}
                     </span>
                     <span className="font-bold text-stone-900">
                       {item.quantity}{item.unit}
@@ -656,7 +653,7 @@ export const CustomerOrderView: React.FC = () => {
             </div>
 
             <h2 className="text-2xl font-black text-stone-900 mb-2">
-              🎉 주문이 접수되었습니다.
+              주문이 정상 접수되었습니다
             </h2>
             <p className="text-sm font-semibold text-stone-500 mb-6">
               판매자({currentStore.shortName})에게 주문이 정상 전달되었습니다.
@@ -671,7 +668,7 @@ export const CustomerOrderView: React.FC = () => {
                 </span>
                 {completedOrder.items.map((it, idx) => (
                   <div key={idx} className="flex justify-between items-center text-base font-extrabold text-stone-900 py-0.5">
-                    <span>{(it.emoji && it.emoji !== '🥕') ? it.emoji : '📦'} {it.productName}</span>
+                    <span>{it.productName}</span>
                     <span className="text-orange-600 font-black">{it.quantity}{it.unit}</span>
                   </div>
                 ))}
@@ -709,7 +706,7 @@ export const CustomerOrderView: React.FC = () => {
               {/* Bank Deposit Info */}
               <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl">
                 <span className="text-xs font-bold text-amber-900 block mb-1">
-                  💰 입금 계좌 안내
+                  입금 계좌 안내
                 </span>
                 <p className="text-base font-black text-amber-950">
                   {currentStore.bankName} {currentStore.bankAccount}

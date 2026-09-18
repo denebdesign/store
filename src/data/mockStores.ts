@@ -18,6 +18,8 @@ export const INITIAL_STORES: Store[] = [
     ownerPhone: '01026177201',
     ownerKakaoId: '5080914486',
     ownerKakaoNickname: '제주나는',
+    managerKakaoIds: ['5080914486'],
+    inviteCode: '7201', // Default invite code matching last 4 digits of phone
     products: [
       {
         id: 'p-1789124477209',

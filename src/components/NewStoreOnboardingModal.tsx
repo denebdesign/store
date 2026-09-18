@@ -63,6 +63,10 @@ export const NewStoreOnboardingModal: React.FC<NewStoreOnboardingModalProps> = (
       description: '제철 맞은 신선한 농산물',
     };
 
+    // Default invite code: last 4 digits of phone or random 4 digits
+    const cleanPhone = ownerPhone.replace(/[^0-9]/g, '');
+    const defaultInviteCode = cleanPhone.length >= 4 ? cleanPhone.slice(-4) : `${Math.floor(1000 + Math.random() * 9000)}`;
+
     const newStore = createNewStore({
       name: storeName.trim(),
       shortName: storeName.trim().slice(0, 10),
@@ -77,6 +81,8 @@ export const NewStoreOnboardingModal: React.FC<NewStoreOnboardingModalProps> = (
       ownerPhone: ownerPhone.trim() || '010-0000-0000',
       ownerKakaoId: kakaoUser?.id,
       ownerKakaoNickname: kakaoUser?.nickname,
+      managerKakaoIds: kakaoUser?.id ? [kakaoUser.id] : [],
+      inviteCode: defaultInviteCode,
       products: [
         {
           id: `prod-${Date.now()}-1`,
@@ -120,7 +126,7 @@ export const NewStoreOnboardingModal: React.FC<NewStoreOnboardingModalProps> = (
           </div>
 
           <div className="mt-3 px-3 py-1.5 bg-white/10 rounded-xl text-[11px] text-yellow-200 flex items-center gap-1.5">
-            <span>🔗 등록 즉시</span>
+            <span>등록 즉시</span>
             <span className="font-bold underline">{TARGET_CUSTOM_DOMAIN}</span>
             <span>전용 주문 링크가 생성됩니다.</span>
           </div>

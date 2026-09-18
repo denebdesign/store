@@ -37,13 +37,13 @@ export const KakaoShareModal: React.FC<KakaoShareModalProps> = ({
   const { displayUrl, actualUrl, shortUrl } = getStoreOrderLinks(currentStore);
 
   // High-trust, professional SMS / Messenger formatted message
-  const smsMessage = `${currentStore.emoji || '📦'} [${currentStore.shortName || currentStore.name}] 간편 주문서 안내
+  const smsMessage = `[${currentStore.shortName || currentStore.name}] 간편 주문서 안내
 
-${currentStore.intro || '정성을 다해 준비한 신선한 산지직송 농산물입니다.'}
+${currentStore.intro || '정성을 다해 준비한 신선한 직거래 상품입니다.'}
 
 회원가입 없이 아래 링크를 터치하시면 1분 만에 편리하게 주문하실 수 있습니다.
 
-👉 주문서 바로가기:
+주문서 바로가기:
 ${shortUrl}`;
 
   const handleCopyLink = () => {
@@ -136,7 +136,6 @@ ${shortUrl}`;
           {/* Direct Link Copy for Farmers - Clean & Simple */}
           <div className="flex items-center gap-2 bg-stone-50 p-2 sm:p-2.5 rounded-xl border border-stone-200">
             <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-stone-200 min-w-0 flex-1">
-              <span className="text-base shrink-0">{currentStore.emoji || '📦'}</span>
               <span className="flex-1 font-mono text-xs sm:text-sm font-bold text-stone-800 truncate">
                 {shortUrl}
               </span>
@@ -169,7 +168,7 @@ ${shortUrl}`;
                     />
                     <div className="p-3">
                       <div className="font-black text-stone-900 text-sm mb-1 leading-snug">
-                        {currentStore.emoji || '📦'} [{currentStore.shortName || currentStore.name}] 산지직송 주문서
+                        [{currentStore.shortName || currentStore.name}] 간편 주문서
                       </div>
                       <div className="text-xs text-stone-500 line-clamp-2 leading-relaxed">
                         {currentStore.intro || '회원가입 없이 터치 몇 번으로 간편하게 주문하세요.'}
@@ -177,7 +176,7 @@ ${shortUrl}`;
                     </div>
                     <div className="px-3 pb-3">
                       <div className="w-full py-2 bg-[#FEE500] text-[#191919] font-black text-xs rounded-lg text-center shadow-2xs">
-                        주문서 작성하기 ✍️
+                        주문서 작성하기
                       </div>
                     </div>
                   </div>

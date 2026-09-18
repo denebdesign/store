@@ -12,6 +12,7 @@ import {
   createOrdersBatchInFirestore,
   deleteOrderFromFirestore,
   deleteStoreFromFirestore,
+  addManagerToStoreInFirestore,
 } from '../services/firestoreService';
 
 interface StoreContextType {
@@ -46,6 +47,7 @@ interface StoreContextType {
   updateStoreProduct: (product: Product) => void;
   deleteStoreProduct: (productId: string) => void;
   createNewStore: (storeData: Omit<Store, 'id' | 'slug'>) => Store;
+  registerManagerToStore: (storeId: string, kakaoUserId: string, nickname?: string) => Promise<void>;
   previousOrder: PreviousOrderProfile | null;
   savePreviousOrderProfile: (profile: PreviousOrderProfile) => void;
   findPreviousOrderByPhone: (phone: string) => Order | undefined;
@@ -620,6 +622,32 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     return newStore;
   };
 
+  const registerManagerToStore = async (storeId: string, kakaoUserId: string, nickname?: string) => {
+    // Update local state
+    setStores((prev) =>
+      prev.map((s) => {
+        if (s.id === storeId) {
+          const list = s.managerKakaoIds ? [...s.managerKakaoIds] : (s.ownerKakaoId ? [s.ownerKakaoId] : []);
+          if (!list.includes(kakaoUserId)) {
+            list.push(kakaoUserId);
+          }
+          const updated: Store = {
+            ...s,
+            managerKakaoIds: list,
+            ...(s.ownerKakaoId ? {} : { ownerKakaoId: kakaoUserId }),
+            ...(nickname && !s.ownerKakaoNickname ? { ownerKakaoNickname: nickname } : {}),
+          };
+          saveStoreToFirestore(updated).catch(console.error);
+          return updated;
+        }
+        return s;
+      })
+    );
+
+    // Update in Firestore
+    await addManagerToStoreInFirestore(storeId, kakaoUserId, nickname);
+  };
+
   const savePreviousOrderProfile = (profile: PreviousOrderProfile) => {
     setPreviousOrder(profile);
   };
@@ -759,6 +787,7 @@ export const StoreProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         updateStoreProduct,
         deleteStoreProduct,
         createNewStore,
+        registerManagerToStore,
         previousOrder,
         savePreviousOrderProfile,
         findPreviousOrderByPhone,

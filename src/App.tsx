@@ -9,8 +9,10 @@ import { CustomerOrderView } from './components/CustomerOrderView';
 import { BossDashboardView } from './components/BossDashboardView';
 import { BossKakaoLoginView } from './components/BossKakaoLoginView';
 import { NewStoreOnboardingModal } from './components/NewStoreOnboardingModal';
+import { InviteCodeAuthModal } from './components/InviteCodeAuthModal';
 import { KakaoUser } from './services/kakaoService';
 import { saveUserProfileToFirestore } from './services/firestoreService';
+import { Store } from './types';
 
 function AppContent() {
   const {
@@ -19,6 +21,7 @@ function AppContent() {
     setCurrentStoreId,
     activeView,
     setActiveView,
+    registerManagerToStore,
   } = useStore();
 
   const [isBossAuthenticated, setIsBossAuthenticated] = useState<boolean>(() => {
@@ -28,6 +31,8 @@ function AppContent() {
     return false;
   });
   const [isOnboardingOpen, setIsOnboardingOpen] = useState<boolean>(false);
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState<boolean>(false);
+  const [pendingStore, setPendingStore] = useState<Store | null>(null);
   const [kakaoUser, setKakaoUser] = useState<KakaoUser | null>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('boss_kakao_user');
@@ -58,15 +63,32 @@ function AppContent() {
       // Save user profile directly to Firestore
       saveUserProfileToFirestore(user).catch(console.error);
 
-      // Check if user already owns a store
-      const userStore = stores.find((s) => s.ownerKakaoId === user.id);
-      if (userStore) {
-        setCurrentStoreId(userStore.id);
+      // Check if user is already an authorized manager or owner of the current store or any store
+      const storeToCheck = currentStore || stores[0];
+      const isAuthorizedInCurrent =
+        storeToCheck &&
+        (storeToCheck.ownerKakaoId === user.id ||
+          (storeToCheck.managerKakaoIds && storeToCheck.managerKakaoIds.includes(user.id)));
+
+      // Check if user is manager in any other store
+      const userOwnedOrManagedStore = stores.find(
+        (s) => s.ownerKakaoId === user.id || (s.managerKakaoIds && s.managerKakaoIds.includes(user.id))
+      );
+
+      if (isAuthorizedInCurrent) {
+        // User is already recognized as manager in this store! Directly grant access
+        setIsBossAuthenticated(true);
+        localStorage.setItem('boss_auth_session', 'true');
+      } else if (userOwnedOrManagedStore) {
+        // User already has another store they manage
+        setCurrentStoreId(userOwnedOrManagedStore.id);
         setIsBossAuthenticated(true);
         localStorage.setItem('boss_auth_session', 'true');
       } else {
-        // Offer clean new store setup for real Kakao-authenticated boss
-        setIsOnboardingOpen(true);
+        // User is NOT yet in managerKakaoIds for this store!
+        // Show Invite Code modal to verify if they are indeed the boss/authorized staff
+        setPendingStore(storeToCheck);
+        setIsInviteModalOpen(true);
       }
     } else {
       // Demo / test mode login
@@ -75,9 +97,26 @@ function AppContent() {
     }
   };
 
+  // Called when the user enters the correct inviteCode in the modal
+  const handleInviteCodeVerified = async () => {
+    if (pendingStore && kakaoUser) {
+      try {
+        await registerManagerToStore(pendingStore.id, kakaoUser.id, kakaoUser.nickname);
+      } catch (e) {
+        console.error('Failed to register manager:', e);
+      }
+      setCurrentStoreId(pendingStore.id);
+    }
+    setIsInviteModalOpen(false);
+    setIsBossAuthenticated(true);
+    localStorage.setItem('boss_auth_session', 'true');
+  };
+
   const handleLogout = () => {
     setIsBossAuthenticated(false);
     setKakaoUser(null);
+    setIsInviteModalOpen(false);
+    setPendingStore(null);
     localStorage.removeItem('boss_auth_session');
     localStorage.removeItem('boss_kakao_user');
     setActiveView('boss');
@@ -124,6 +163,26 @@ function AppContent() {
           if (newStoreId) {
             setCurrentStoreId(newStoreId);
           }
+        }}
+      />
+
+      {/* Invite Code Verification Modal for Customers / Managers */}
+      <InviteCodeAuthModal
+        isOpen={isInviteModalOpen}
+        onClose={() => {
+          setIsInviteModalOpen(false);
+          setPendingStore(null);
+        }}
+        kakaoUser={kakaoUser}
+        targetStore={pendingStore || currentStore}
+        onVerified={handleInviteCodeVerified}
+        onGoCustomerView={() => {
+          setIsInviteModalOpen(false);
+          setActiveView('customer');
+        }}
+        onOpenNewStoreModal={() => {
+          setIsInviteModalOpen(false);
+          setIsOnboardingOpen(true);
         }}
       />
     </div>

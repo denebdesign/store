@@ -53,6 +53,8 @@ export interface Store {
   ownerPhone: string;
   ownerKakaoId?: string;
   ownerKakaoNickname?: string;
+  managerKakaoIds?: string[]; // List of Kakao User IDs authorized as boss/admin
+  inviteCode?: string; // Secret boss code / invite code (e.g. 'FARM-7788' or 6 digits)
   adminPin?: string; // 4-digit PIN for quick boss login (default '1234')
   products: Product[];
 }

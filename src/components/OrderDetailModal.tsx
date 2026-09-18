@@ -103,9 +103,8 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             <div className="space-y-2">
               {order.items.map((item, idx) => (
                 <div key={idx} className="flex justify-between items-center text-base">
-                  <span className="font-extrabold text-stone-900 flex items-center gap-2">
-                    <span>{item.emoji && item.emoji !== '🥕' ? item.emoji : '📦'}</span>
-                    <span>{item.productName}</span>
+                  <span className="font-extrabold text-stone-900">
+                    {item.productName}
                   </span>
                   <span className="text-xl font-black text-orange-600">
                     {item.quantity}{item.unit}
@@ -210,7 +209,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
             </div>
 
             <p className="text-[11px] text-stone-500 text-center pt-0.5">
-              💡 {currentStatusConfig.description}
+              {currentStatusConfig.description}
             </p>
           </div>
         </div>

@@ -295,4 +295,30 @@ export async function deleteStoreFromFirestore(storeId: string): Promise<void> {
   }
 }
 
+/**
+ * Registers a Kakao user ID as an authorized manager for a store in Firestore
+ */
+export async function addManagerToStoreInFirestore(storeId: string, kakaoUserId: string, nickname?: string): Promise<void> {
+  try {
+    const storeRef = doc(db, 'stores', storeId);
+    const storeDoc = await getDoc(storeRef);
+    if (storeDoc.exists()) {
+      const data = storeDoc.data() as Store;
+      const currentManagers = data.managerKakaoIds || (data.ownerKakaoId ? [data.ownerKakaoId] : []);
+      if (!currentManagers.includes(kakaoUserId)) {
+        currentManagers.push(kakaoUserId);
+      }
+      await updateDoc(storeRef, {
+        managerKakaoIds: currentManagers,
+        ...(data.ownerKakaoId ? {} : { ownerKakaoId: kakaoUserId }),
+        ...(nickname && !data.ownerKakaoNickname ? { ownerKakaoNickname: nickname } : {}),
+      });
+      console.log(`[Firestore] Manager ${kakaoUserId} registered to store ${storeId}`);
+    }
+  } catch (error) {
+    console.error(`[Firestore] Error adding manager to store ${storeId}:`, error);
+    throw error;
+  }
+}
+
 

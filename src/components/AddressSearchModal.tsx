@@ -296,7 +296,7 @@ export const AddressSearchModal: React.FC<AddressSearchModalProps> = ({
         {!isManualMode && (
           <div className="px-4 py-2.5 bg-stone-100 border-t border-stone-200 text-center shrink-0">
             <span className="text-[11px] text-stone-500">
-              💡 검색 결과에서 해당 주소를 터치하시면 자동으로 입력됩니다.
+              검색 결과에서 해당 주소를 터치하시면 자동으로 입력됩니다.
             </span>
           </div>
         )}

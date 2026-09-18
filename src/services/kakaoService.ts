@@ -109,7 +109,7 @@ export const shareStoreToKakaoTalk = (
     shareFn({
       objectType: 'feed',
       content: {
-        title: `${store.emoji || '📦'} [${store.shortName}] 산지직송 주문서`,
+        title: `[${store.shortName}] 간편 주문서`,
         description: store.intro || '회원가입 없이 터치 몇 번으로 간편하게 주문하세요.',
         imageUrl: 'https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=800&auto=format&fit=crop&q=80',
         link: {
@@ -119,7 +119,7 @@ export const shareStoreToKakaoTalk = (
       },
       buttons: [
         {
-          title: '주문서 작성하기 ✍️',
+          title: '주문서 작성하기',
           link: {
             mobileWebUrl: orderUrl,
             webUrl: orderUrl,

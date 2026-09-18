@@ -452,9 +452,8 @@ export const DataImportModal: React.FC<DataImportModalProps> = ({ isOpen, onClos
 
             {/* Helpful Guide for Farmers */}
             <div className="text-[11px] text-stone-600 bg-stone-100/70 p-3.5 rounded-2xl border border-stone-200 leading-relaxed space-y-1">
-              <p className="font-bold text-stone-800 flex items-center gap-1.5">
-                <span>💡</span>
-                <span>단골 고객 문자 주문 200% 활용법:</span>
+              <p className="font-bold text-stone-800">
+                단골 고객 문자 주문 200% 활용법:
               </p>
               <ul className="list-disc list-inside text-stone-600 space-y-0.5 text-[10.5px]">
                 <li><strong>성함/상호명 자동 판별</strong>: "안녕하세요~함덕 라플라주입니다"처럼 상호명이나 인사말이 섞여 있어도 정확히 분리합니다.</li>

@@ -8,7 +8,7 @@ import { DataImportModal } from './DataImportModal';
 import { NewStoreOnboardingModal } from './NewStoreOnboardingModal';
 import { 
   FileSpreadsheet, Share2, Settings, Power, Clock, Search, 
-  Package, ChevronRight, CheckCircle2, AlertCircle, Phone, ArrowUpRight, Filter, Calendar, LogOut, Upload, Plus, ChevronDown, Trash2, Smartphone
+  Package, ChevronRight, CheckCircle2, AlertCircle, Phone, ArrowUpRight, Filter, Calendar, LogOut, Upload, Plus, ChevronDown, Trash2, Smartphone, KeyRound, Copy, Check
 } from 'lucide-react';
 
 interface BossDashboardViewProps {
@@ -40,6 +40,7 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
   const [isKakaoModalOpen, setIsKakaoModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isNewStoreModalOpen, setIsNewStoreModalOpen] = useState(false);
+  const [copiedInviteCode, setCopiedInviteCode] = useState(false);
 
   // Active selected order resolved directly from latest orders state
   const selectedOrder = useMemo(() => {
@@ -181,10 +182,7 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
           {/* Row 1: Brand / Store info & System Utilities */}
           <div className="flex items-center justify-between gap-2">
             {/* Left: Store identity & Status badges */}
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-stone-800 border border-stone-700/80 flex items-center justify-center text-lg sm:text-xl shrink-0 shadow-xs">
-                {currentStore.emoji}
-              </div>
+            <div className="flex items-center gap-2 min-w-0">
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {stores.length > 1 ? (
@@ -197,16 +195,16 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
                           setCurrentStoreId(e.target.value);
                         }
                       }}
-                      className="bg-stone-800 hover:bg-stone-750 border border-stone-700 text-white text-xs sm:text-sm font-black rounded-lg px-2 py-0.5 focus:ring-1 focus:ring-orange-500 cursor-pointer max-w-[140px] sm:max-w-none truncate"
+                      className="bg-stone-800 hover:bg-stone-750 border border-stone-700 text-white text-xs sm:text-sm font-black rounded-lg px-2.5 py-1 focus:ring-1 focus:ring-orange-500 cursor-pointer max-w-[160px] sm:max-w-none truncate"
                     >
                       {stores.map((s) => (
                         <option key={s.id} value={s.id}>
-                          {s.emoji} {s.shortName}
+                          {s.shortName || s.name}
                         </option>
                       ))}
                     </select>
                   ) : (
-                    <h1 className="text-sm sm:text-base font-black text-stone-100 truncate max-w-[150px] sm:max-w-none">
+                    <h1 className="text-sm sm:text-base font-black text-stone-100 truncate max-w-[160px] sm:max-w-none">
                       {currentStore.name}
                     </h1>
                   )}
@@ -279,6 +277,33 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
               <span className="whitespace-nowrap">데이터 불러오기</span>
             </button>
           </div>
+
+          {/* Row 3: Boss Invite Code Info Pill (고객 유입 차단 보안코드 표시) */}
+          <div className="flex items-center justify-between px-2.5 py-1.5 bg-stone-800/80 border border-stone-700/60 rounded-xl text-[11px] text-stone-300">
+            <div className="flex items-center gap-1.5">
+              <KeyRound className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>사장님 보안코드:</span>
+              <span className="font-mono font-black text-amber-300 tracking-wider">
+                {currentStore.inviteCode || (currentStore.ownerPhone.replace(/[^0-9]/g, '').slice(-4) || '7788')}
+              </span>
+              <span className="text-[10px] text-stone-400 hidden xs:inline">(새 기기 로그인/직원 초대용)</span>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                const code = currentStore.inviteCode || (currentStore.ownerPhone.replace(/[^0-9]/g, '').slice(-4) || '7788');
+                navigator.clipboard.writeText(code);
+                setCopiedInviteCode(true);
+                setTimeout(() => setCopiedInviteCode(false), 2000);
+              }}
+              className="px-2 py-0.5 bg-stone-700 hover:bg-stone-650 text-stone-200 hover:text-white rounded-lg text-[10px] font-bold transition flex items-center gap-1 shrink-0"
+              title="보안코드 복사"
+            >
+              {copiedInviteCode ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+              <span>{copiedInviteCode ? '복사됨' : '코드 복사'}</span>
+            </button>
+          </div>
         </div>
       </header>
 
@@ -289,7 +314,7 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
           <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 sm:pb-4 border-b border-stone-100 gap-2.5">
             <div>
               <span className="text-xs font-extrabold text-orange-600 uppercase tracking-wider">
-                📊 {dateFilter === 'today' ? '오늘의 주문 핵심 현황' : dateFilter === 'yesterday' ? '어제의 주문 현황' : dateFilter === 'week' ? '최근 7일 주문 현황' : dateFilter === 'all' ? '전체 주문 누적 현황' : `${dateFilter} 주문 현황`}
+                {dateFilter === 'today' ? '오늘의 주문 핵심 현황' : dateFilter === 'yesterday' ? '어제의 주문 현황' : dateFilter === 'week' ? '최근 7일 주문 현황' : dateFilter === 'all' ? '전체 주문 누적 현황' : `${dateFilter} 주문 현황`}
               </span>
               <h2 className="text-xl sm:text-2xl font-black text-stone-900 mt-0.5">
                 {dateFilter === 'today' ? todayFormatted : dateFilter === 'yesterday' ? '어제 주문 내역' : dateFilter === 'week' ? '최근 7일 주문' : dateFilter === 'all' ? '전체 기간' : `${dateFilter} 주문`}
@@ -410,7 +435,7 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
           {/* 총 주문 금액 */}
           <div className="pt-2 border-t border-stone-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <div>
-              <span className="text-xs font-bold text-stone-500">💰 {dateFilter === 'today' ? '오늘 총 주문금액' : '선택 기간 총 주문금액'}</span>
+              <span className="text-xs font-bold text-stone-500">{dateFilter === 'today' ? '오늘 총 주문금액' : '선택 기간 총 주문금액'}</span>
               <p className="text-xs text-stone-400">취소 주문 제외한 실매출 합계</p>
             </div>
             <div className="text-2xl sm:text-3xl font-black text-stone-900 tracking-tight" id="summary-total-revenue">
@@ -424,7 +449,6 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-lg">🔴</span>
                 <h3 className="text-xl font-black text-stone-900">
                   주문 목록 관리
                 </h3>
@@ -534,10 +558,10 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
               {(
                 [
                   { id: 'all', label: '전체', count: dateScopedOrders.length },
-                  { id: 'new', label: '🟡 신규', count: dateScopedOrders.filter((o) => o.status === 'new').length },
-                  { id: 'preparing', label: '🔵 준비중', count: dateScopedOrders.filter((o) => o.status === 'preparing').length },
-                  { id: 'shipped', label: '🟢 출고', count: dateScopedOrders.filter((o) => o.status === 'shipped').length },
-                  { id: 'cancelled', label: '⚪ 취소', count: dateScopedOrders.filter((o) => o.status === 'cancelled').length },
+                  { id: 'new', label: '신규', count: dateScopedOrders.filter((o) => o.status === 'new').length },
+                  { id: 'preparing', label: '준비중', count: dateScopedOrders.filter((o) => o.status === 'preparing').length },
+                  { id: 'shipped', label: '출고', count: dateScopedOrders.filter((o) => o.status === 'shipped').length },
+                  { id: 'cancelled', label: '취소', count: dateScopedOrders.filter((o) => o.status === 'cancelled').length },
                 ] as const
               ).map((tab) => (
                 <button
@@ -610,7 +634,7 @@ export const BossDashboardView: React.FC<BossDashboardViewProps> = ({ onLogout }
                         </div>
 
                         <p className="text-sm font-extrabold text-stone-800 mt-1 line-clamp-1">
-                          📦 {itemsSummary}
+                          {itemsSummary}
                         </p>
 
                         <p className="text-xs text-stone-500 mt-0.5 truncate">

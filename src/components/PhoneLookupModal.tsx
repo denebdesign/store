@@ -156,9 +156,9 @@ export const PhoneLookupModal: React.FC<PhoneLookupModalProps> = ({
           {searched && matchedOrder && (
             <div className="p-4 bg-orange-50/80 border-2 border-orange-300 rounded-2xl space-y-3 animate-in zoom-in-95 duration-150">
               <div className="flex items-center justify-between pb-2 border-b border-orange-200/70">
-                <span className="text-xs font-black text-orange-900 flex items-center gap-1">
-                  <span>🎉</span>
-                  <span>지난번 주문 내역을 찾았습니다!</span>
+                <span className="text-xs font-black text-orange-900 flex items-center gap-1.5">
+                  <Check className="w-4 h-4 text-orange-600" />
+                  <span>지난번 주문 내역을 찾았습니다</span>
                 </span>
                 <span className="text-[11px] font-bold text-orange-700 bg-orange-200/60 px-2 py-0.5 rounded-full">
                   {new Date(matchedOrder.createdAt).toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' })} 주문
@@ -202,7 +202,7 @@ export const PhoneLookupModal: React.FC<PhoneLookupModalProps> = ({
           {/* Result when not found */}
           {searched && !matchedOrder && (
             <div className="p-4 bg-stone-50 border border-stone-200 rounded-2xl text-center space-y-1.5 animate-in fade-in duration-150">
-              <div className="text-2xl mb-1">🔍</div>
+              <Search className="w-8 h-8 text-stone-400 mx-auto mb-1" />
               <p className="text-sm font-bold text-stone-800">
                 해당 번호의 이전 주문 내역이 없습니다.
               </p>
@@ -214,7 +214,7 @@ export const PhoneLookupModal: React.FC<PhoneLookupModalProps> = ({
 
           {/* Quick guide */}
           <div className="p-3 bg-stone-50 rounded-xl border border-stone-100 text-[11px] text-stone-500 leading-relaxed">
-            💡 <strong>안내</strong>: 3개월이나 6개월 만에 다시 주문하셔도 휴대폰 번호만 넣으시면 이전 배송지가 그대로 불러와집니다.
+            <strong>안내</strong>: 3개월이나 6개월 만에 다시 주문하셔도 휴대폰 번호만 넣으시면 이전 배송지가 그대로 불러와집니다.
           </div>
         </div>
       </div>

@@ -54,9 +54,7 @@ export const PreviousOrderModal: React.FC<PreviousOrderModalProps> = ({
           {/* Items card */}
           <div className="bg-stone-50 border border-stone-200/80 rounded-2xl p-3.5">
             <div className="flex items-center justify-between text-xs font-semibold text-stone-500 mb-2 pb-1.5 border-b border-stone-200">
-              <span className="flex items-center gap-1">
-                <span>{currentStore.emoji}</span> 지난번 주문 상품
-              </span>
+              <span>지난번 주문 상품</span>
               <span>총 {totalQty}개</span>
             </div>
 
@@ -64,7 +62,7 @@ export const PreviousOrderModal: React.FC<PreviousOrderModalProps> = ({
               {previousOrder.items.map((item, idx) => (
                 <div key={idx} className="flex justify-between items-center text-sm">
                   <span className="font-semibold text-stone-800">
-                    {item.emoji || currentStore.emoji} {item.productName}
+                    {item.productName}
                   </span>
                   <span className="font-bold text-stone-900">
                     {item.quantity}{item.unit}
